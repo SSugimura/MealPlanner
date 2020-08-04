@@ -45,7 +45,8 @@ class WebViewActivity : AppCompatActivity() {
                 request: WebResourceRequest?,
                 error: WebResourceError?
             ) {
-                finish()
+//                finish()
+                Log.d("error", error.toString())
             }
         })
     }
