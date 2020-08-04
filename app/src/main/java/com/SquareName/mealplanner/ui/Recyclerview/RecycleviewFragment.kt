@@ -43,7 +43,7 @@ class RecycleviewFragment : Fragment(){
         viewAdapter = RecyclerAdapter(value, object : RecyclerAdapter.OnItemClickListener{
             override fun onItemClick(view: View, position: Int, clickedText: String) {
                 deleteAll()
-                create("gazou:", "namae", clickedText,"zairyo,zairyo")
+                create("gazou:", "namae", clickedText,"zairyo")
                 Log.d("DB InputCheck",realm.where(Task::class.java).findAll().toString())
                 ItemClick(view, position)
             }
