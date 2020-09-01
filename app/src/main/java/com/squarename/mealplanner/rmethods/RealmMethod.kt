@@ -20,38 +20,9 @@ class RealmMethod {
         }
     }
 
-    fun readAll(BkmorDia: Boolean){//true->Bkm,false->Diary
+    fun readAll(BkmorDia: Boolean): List<Item>{//true->Bkm,false->Diary
         var task = realm.where(testTask::class.java)
             .equalTo("BkmorDia",BkmorDia)
-            .findAll()
-        val listTask: List<testTask> = task
-        Log.d("InputCheck", listTask.toString())
-    }
-
-    //完全一致するレコードを探す（好きにいじって）
-    fun readSerch(BkmorDia: Boolean, title: String, url: String){
-        var task = realm.where(testTask::class.java)
-            .equalTo("BkmorDia", BkmorDia)
-            .equalTo("title", title)
-            .equalTo("url", url)
-    }
-
-    fun readFromTime(timeStamp: String): List<Item>{//時間から記録用のデータをList<Item>型で返す
-        var task = realm.where(testTask::class.java)
-            .equalTo("BkmorDia",false)
-            .equalTo("timeStamp",timeStamp)
-            .findAll()
-        val listTask: List<testTask> = task
-        var items = mutableListOf<Item>()
-        for(i in listTask.indices){
-            items.add(i, Item(listTask[i].id, listTask[i].title, listTask[i].url))
-        }
-        return items
-    }
-
-    fun readBkm(): List<Item>{
-        var task = realm.where(testTask::class.java)
-            .equalTo("BkmorDia",true)
             .findAll()
         val listTask: List<testTask> = task
         val items = mutableListOf<Item>()
@@ -61,14 +32,32 @@ class RealmMethod {
         return  items
     }
 
-    //タイムスタンプをyyyy/MM/ddで返す
-    fun getTime(timeStamp:String): String{
-        var task = realm.where(testTask::class.java)
+    //完全一致するレコードを探す（好きにいじって）
+    fun readSerch(BkmorDia: Boolean, title: String, url: String): List<Item>{
+        val task = realm.where(testTask::class.java)
+            .equalTo("BkmorDia", BkmorDia)
+            .equalTo("title", title)
+            .equalTo("url", url)
+            .findAll()
+        val listTask: List<testTask> = task
+        val items = mutableListOf<Item>()
+        for(i in listTask.indices){
+            items.add(i, Item(listTask[i].id, listTask[i].title, listTask[i].url))
+        }
+        return items
+    }
+
+    fun readFromTime(timeStamp: String): List<Item>{//時間から記録用のデータをList<Item>型で返す
+        val task = realm.where(testTask::class.java)
+            .equalTo("BkmorDia",false)
             .equalTo("timeStamp",timeStamp)
             .findAll()
         val listTask: List<testTask> = task
-        Log.d("listcheck", "Date:" + listTask[0].timeStamp)
-        return listTask[0].timeStamp
+        val items = mutableListOf<Item>()
+        for(i in listTask.indices){
+            items.add(i, Item(listTask[i].id, listTask[i].title, listTask[i].url))
+        }
+        return items
     }
 
     fun delete(id: String) {
@@ -78,6 +67,17 @@ class RealmMethod {
                 .findFirst()
                 ?: return@executeTransaction
             task.deleteFromRealm()
+        }
+    }
+
+    fun deleteTitle(BkmorDia: Boolean, title: String){
+        var task = realm.where(testTask::class.java)
+            .equalTo("BkmorDia", BkmorDia)
+            .equalTo("title",title)
+            .findAll()
+        //削除
+        realm.executeTransaction {
+            task.deleteAllFromRealm()
         }
     }
 

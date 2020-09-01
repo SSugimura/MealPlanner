@@ -30,7 +30,7 @@ class BkmListFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        items = realm.readBkm()
+        items = realm.readAll(true)
 
         val root = inflater.inflate(R.layout.fragment_recyclerview, container, false)
 

@@ -12,6 +12,10 @@ import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
 import com.squarename.mealplanner.rmethods.RealmMethod
 import kotlinx.android.synthetic.main.activity_web_view.*
+import android.widget.Toast
+import android.view.Gravity
+import com.squarename.mealplanner.rmethods.testTask
+import io.realm.Realm
 
 class WebViewActivity : AppCompatActivity() {
 
@@ -29,10 +33,18 @@ class WebViewActivity : AppCompatActivity() {
         }
 
         bookmark_button.setOnClickListener(View.OnClickListener{
-            RealmMethod().create(true, webview.title, intent.getStringExtra(("url")))
+            val task = RealmMethod().readSerch(true, webview.title, intent.getStringExtra(("url")))
+            if(task.isEmpty()) {
+                RealmMethod().create(true, webview.title, intent.getStringExtra(("url")))
+                showToast("ブックマークしました")
+            }else{
+                RealmMethod().deleteTitle(true,webview.title)
+                showToast("ブックマークを削除しました")
+            }
         })
         record_button.setOnClickListener(View.OnClickListener{
             RealmMethod().create(false, webview.title, intent.getStringExtra(("url")))
+            showToast("記録しました")
         })
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -75,5 +87,11 @@ class WebViewActivity : AppCompatActivity() {
             if (it.canGoBack()) it.goBack()
             else super.onBackPressed()
         } ?: super.onBackPressed()
+    }
+
+    fun showToast(message:String){
+        val toast = Toast.makeText(applicationContext, message, Toast.LENGTH_LONG)
+        toast.setGravity(Gravity.CENTER, 0, 200)
+        toast.show()
     }
 }
